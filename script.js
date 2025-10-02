@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+import gymSample from "./audio/gym_sample.mp3";
 
 
 //choppy init
@@ -12,7 +13,7 @@ import * as Tone from "tone";
 //input_jitt range 0 - 8
 
 //init audio variables
-var input_file = "audio/gym_sample.mp3";
+var input_file = gymSample;
 let audioContextStarted = false;
 let input_grain_size = 0.08;
 let input_density = 10;
