@@ -1,0 +1,19 @@
+{
+  "name": "granular-synth",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+      "build": "vite build", 
+      "dev": "vite --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "tone": "^15.1.22"
+  },
+  "devDependencies": {
+    "vite": "^7.0.1"
+  }
+}

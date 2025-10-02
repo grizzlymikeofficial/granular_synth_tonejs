@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/dist/assets/Betatron-Regular.otf" rel="fonts">
+    <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
+    <title>Granular Synth</title>
+    <!--WAVEFORM TUTORIAL CREDIT: https://www.youtube.com/watch?v=yCmnDWCF8m0/-->
+    <!--SLIDER TUTORIAL CREDIT: https://www.youtube.com/watch?v=Wq77gh1D3GY-->
+
+
+</head>
+
+<body>
+    <h1 style="text-align: center">this is a granular synthesizer</h1>
+    <script type="module" src="script.js"></script>
+    
+    <!-- waveform visualizer-->
+     <div class="audio-container">
+        <div class="audio"></div>
+
+     </div>
+
+    <!-- synthesizer controls -->
+    <div class="center">
+        <div class="knob_title"><p>grain size</p>
+
+        <div class="slider">
+            <div class="knob" id ="knob_1">
+                <div class="rotator">
+                    <div class="text" id="text_1">0</div>
+                </div>
+                <div class="pointer" id="pointer_1">  
+                    <span class="material-icons">play_arrow</span>
+            </div>
+            </div>
+        </div>
+    </div>
+        <div class="knob_title"><p>grain density</p>
+
+        <div class="slider">
+            <div class="knob" id="knob_2">
+                <div class="rotator">
+                    <div class="text" id="text_2">0</div>
+                </div>
+                <div class="pointer" id="pointer_2">  
+                    <span class="material-icons">play_arrow</span>
+            </div>
+            </div>
+        </div>
+        </div>
+    <div class="knob_title"><p>jitter</p>
+        <div class="slider">
+            <div class="knob" id="knob_3">
+                <div class="rotator">
+                    <div class="text" id="text_3">0</div>
+                </div>
+                <div class="pointer" id="pointer_3">  
+                    <span class="material-icons">play_arrow</span>
+            </div>
+            </div>
+        </div>
+        
+        </div>
+
+    <div class="center">
+        
+    </div>
+</body>
+
+</html>
