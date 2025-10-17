@@ -43,7 +43,7 @@ const wavesurfer = WaveSurfer.create({
     container: '#waveform',
     waveColor: '#C0C0C0',
     progressColor: '#999999',
-    url: './audio/gym_sample.mp3',
+    url: gymSample,
   })
   
 
