@@ -1,5 +1,7 @@
 import * as Tone from "tone";
 import gymSample from "./audio/gym_sample.mp3";
+import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js'
+
 
 
 //choppy init
@@ -37,7 +39,13 @@ let currentText = null;
 let currentProgressPercent = 0; // Global variable to store progress
 
 //waveform generator
-let waveform = null;
+const wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#C0C0C0',
+    progressColor: '#999999',
+    url: './audio/gym_sample.mp3',
+  })
+  
 
 function startAudio() {
     if (!audioContextStarted) {

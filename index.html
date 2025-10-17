@@ -6,7 +6,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/dist/assets/Betatron-Regular.otf" rel="fonts">
     <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
+
+    
     <title>Granular Synth</title>
+    <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/8/87/Blank_atom_%2C_nucleus_with_electron_shells.png">
     <!--WAVEFORM TUTORIAL CREDIT: https://www.youtube.com/watch?v=yCmnDWCF8m0/-->
     <!--SLIDER TUTORIAL CREDIT: https://www.youtube.com/watch?v=Wq77gh1D3GY-->
 
@@ -19,14 +22,14 @@
     
     <!-- waveform visualizer-->
      <div class="audio-container">
-        <div class="audio"></div>
+        <div id="waveform"></div>
 
      </div>
 
     <!-- synthesizer controls -->
     <div class="center">
+        
         <div class="knob_title"><p>grain size</p>
-
         <div class="slider">
             <div class="knob" id ="knob_1">
                 <div class="rotator">
@@ -37,7 +40,7 @@
             </div>
             </div>
         </div>
-    </div>
+        </div>
         <div class="knob_title"><p>grain density</p>
 
         <div class="slider">
@@ -51,23 +54,21 @@
             </div>
         </div>
         </div>
-    <div class="knob_title"><p>jitter</p>
-        <div class="slider">
-            <div class="knob" id="knob_3">
-                <div class="rotator">
-                    <div class="text" id="text_3">0</div>
+        <div class="knob_title"><p>jitter</p>
+            <div class="slider">
+                <div class="knob" id="knob_3">
+                    <div class="rotator">
+                        <div class="text" id="text_3">0</div>
+                    </div>
+                    <div class="pointer" id="pointer_3">  
+                        <span class="material-icons">play_arrow</span>
                 </div>
-                <div class="pointer" id="pointer_3">  
-                    <span class="material-icons">play_arrow</span>
+                </div>
             </div>
-            </div>
-        </div>
         
         </div>
-
-    <div class="center">
-        
     </div>
+    
 </body>
 
 </html>
