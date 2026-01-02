@@ -45,6 +45,22 @@ const wavesurfer = WaveSurfer.create({
     progressColor: '#999999',
     url: gymSample,
   })
+
+function getNewAudioFile(){
+    console.log("getting new audio file");
+    const audioFileInput = document.getElementById('audio_upload');
+    const audioFile = audioFileInput.files[0];
+    let file = null;
+    if (audioFile){
+        console.log("audio file found");
+        const audioFileURL = URL.createObjectURL(audioFile);
+        file = audioFileURL;
+    }
+    else{
+         file = gymSample;
+    }
+    return file;
+}
   
 
 function startAudio() {
@@ -262,6 +278,7 @@ const rotateKnob = (e) =>{
 }
 
 
+
 //main call function
 function main(){
     //set grain size to max value for init
@@ -271,14 +288,17 @@ function main(){
     document.getElementById("pointer_2").style.transform = 'rotate(-135deg)';
 
 
+
+
     //call 
     document.addEventListener('click', startAudio, { once: true });
     sliderRotate();
     document.addEventListener("mousemove", rotateKnob);
     document.addEventListener("mouseup",() => {
         isRotating = false;
-        createAudioGrain(input_file, "output.mp3", current_grain_size, current_density, current_jitter);
+        createAudioGrain(getNewAudioFile(), gymSample, current_grain_size, current_density, current_jitter);
     });
+
 }
 
 //call main()
