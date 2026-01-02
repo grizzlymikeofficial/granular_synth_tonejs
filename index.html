@@ -18,7 +18,9 @@
 
 <body>
     <h1 style="text-align: center">this is a granular synthesizer</h1>
-    <script type="module" src="script.js"></script>
+  
+    
+    <script type="module" src="public/script.js"></script>
     
     <!-- waveform visualizer-->
      <div class="audio-container">
@@ -67,6 +69,18 @@
             </div>
         
         </div>
+    </div>
+    <div class="center">
+        <form name="uploadForm" class="upload" >
+            <div>
+            <input class="upload" type="file" id="audio_upload" name="audio_upload" accept="audio/*" />
+            <span id="filenameDisplay">gymsample.wav</span>
+              <!-- <label for="fileNum">Selected files:</label>
+              <output id="fileNum">0</output>;
+              <label for="fileSize">Total size:</label>
+              <output id="fileSize">0</output> -->
+            </div>
+          </form>
     </div>
     
 </body>
