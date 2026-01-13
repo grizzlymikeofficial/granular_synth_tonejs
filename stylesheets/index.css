@@ -141,7 +141,7 @@ body {
     /* background: blue; */
     width: 4vw;
     height: 20px;
-    top: calc(50%-10px);
+    top: calc(50% - 10px);
     left: 0;
     /* z-index: 1; */
     display: flex;
@@ -157,6 +157,22 @@ body {
     translateX(0.4vw);
     color: black;
 
+}
+
+#playPauseBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  outline: none; /* fallback */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  max-height: 10%;
+}
+
+#playPauseBtn:hover {
+  background-image: url("public/assets/pause_button.svg");
 }
 
 

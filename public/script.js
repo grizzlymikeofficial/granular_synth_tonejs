@@ -31,6 +31,8 @@ let current_jitter = 0;
 let current_player = null;
 let current_gain = null;
 
+const grainStartTimes = [];
+
 //init gui variables 
 let isRotating = false;
 let currentKnob = null;
@@ -44,7 +46,69 @@ const wavesurfer = WaveSurfer.create({
     waveColor: '#C0C0C0',
     progressColor: '#999999',
     url: gymSample,
+    interact: false, 
   })
+
+let wsReady = false
+
+wavesurfer.on('ready', () => {
+  wsReady = true
+  console.log('WaveSurfer ready')
+})
+
+//Visual Sync for input waveform only
+let rafId = null
+let startedAt = 0
+
+function startVisualSync(player) {
+  const duration = player.buffer.duration
+  startedAt = Tone.now()
+
+  const tick = () => {
+    // elapsed playback time in seconds (mod duration if looping)
+    const elapsed = (Tone.now() - startedAt) % duration
+
+    // Drive WaveSurfer progress:
+    wavesurfer.setTime(elapsed) // or wavesurfer.seekTo(elapsed / duration)
+
+    rafId = requestAnimationFrame(tick)
+  }
+
+  cancelAnimationFrame(rafId)
+  rafId = requestAnimationFrame(tick)
+}
+
+function stopVisualSync() {
+//   cancelAnimationFrame(rafId)
+  stopGrainJumpUI()
+  rafId = null
+}
+
+let grainUiTimer = null
+
+
+function startGrainJumpUI(grainStartTimes, density) {
+  clearInterval(grainUiTimer)
+
+  let i = 0
+  const ms = 1000 / density  // one jump per grain
+
+  grainUiTimer = setInterval(() => {
+    if (!wsReady || !grainStartTimes.length) return
+
+    const t = grainStartTimes[i % grainStartTimes.length]
+    // jump the progress bar
+    wavesurfer.seekTo(t / wavesurfer.getDuration())
+
+    i++
+  }, ms)
+}
+
+function stopGrainJumpUI() {
+  clearInterval(grainUiTimer)
+  grainUiTimer = null
+}
+
 
 function getNewAudioFile(){
     console.log("getting new audio file");
@@ -74,6 +138,26 @@ function startAudio() {
     createAudioGrain(input_file, "output.mp3", input_grain_size, input_density, input_jitter);
 }
 
+function fadeOutAndDispose(player, gain, fade = 0.5) {
+  if (!player || !gain) return;
+
+  const t = Tone.now();
+  gain.gain.cancelAndHoldAtTime(t);
+  gain.gain.setValueAtTime(gain.gain.value, t);
+  gain.gain.rampTo(0, fade, t);
+
+  player.stop(t + fade);
+
+  // dispose slightly after stop
+  Tone.getContext().setTimeout(() => {
+    player.dispose();
+    gain.dispose();
+  }, (fade + 0.01) * 1000);
+  stopVisualSync();
+  console.log("fading player", player, "gain", gain, "gain.value", gain.gain.value);
+
+}
+
     //input_file - location
     //output_fules - string
     //grain size (seconds)
@@ -83,18 +167,15 @@ function startAudio() {
     const buffer = new Tone.ToneAudioBuffer(input_file, () => {
         console.log("Audio File Loaded", input_file);
 
+        // startAudio();
+
         //check if player is already playing
         if (current_player && current_gain){
-            current_gain.gain.rampTo(0,0.3);
-
-            setTimeout(() => {
-                current_player.stop();
-                current_player.dispose();
-                current_gain.dispose();
-                current_player = null;
-                current_gain = null;
-                console.log('audio stopped');
-            }, 200); // slightly > fade time
+           const oldPlayer = current_player;
+            const oldGain = current_gain;
+            current_player = null;
+            current_gain = null;
+            fadeOutAndDispose(oldPlayer, oldGain, 1);
         }
         
 
@@ -162,6 +243,7 @@ function startAudio() {
 
             //extract grain from input
             let grain = audioArray.slice(grain_start, grain_start + samples_per_grain);
+            grainStartTimes.push(grain_start / sampleRate)
 
             //apply hamming window (if possible)
             for (let k = 0; k < grain.length; k++) {
@@ -206,13 +288,16 @@ function startAudio() {
 
         const newBuffer = Tone.Buffer.fromArray(output, sampleRate);
         current_gain = new Tone.Gain(0.8).toDestination();
-        current_player = new Tone.Player(newBuffer).connect(current_gain).toDestination();
+        current_player = new Tone.Player(newBuffer).connect(current_gain);
         // current_player.loop = true;
         // waveform = Tone.Waveform;
         // console.log('waveform data',waveform);
         current_player.loop = true;
         current_player.start();
         console.log('audio playing');
+        startGrainJumpUI(grainStartTimes, density);
+
+        //startVisualSync(current_player); //straight fwd visualization 
 
     });
 }
@@ -281,23 +366,53 @@ const rotateKnob = (e) =>{
 
 //main call function
 function main(){
+    let isPlaying = false;
+    const icon = document.getElementById("playPauseIcon")
     //set grain size to max value for init
     document.getElementById("text_1").innerHTML = 100;
     document.getElementById("pointer_1").style.transform = 'rotate(-135deg)';
     document.getElementById("text_2").innerHTML = 100;
     document.getElementById("pointer_2").style.transform = 'rotate(-135deg)';
+    const btn = document.getElementById("playPauseBtn");
 
 
 
-
-    //call 
+    //call mouse actions
     document.addEventListener('click', startAudio, { once: true });
+    isPlaying = true;
+
     sliderRotate();
     document.addEventListener("mousemove", rotateKnob);
-    document.addEventListener("mouseup",() => {
+    document.addEventListener("mouseup", async (e) => {
+        if (e.target.closest("#playPauseBtn")) return; 
+
         isRotating = false;
+        console.log("mouseup -> rebuilding grains");
         createAudioGrain(getNewAudioFile(), gymSample, current_grain_size, current_density, current_jitter);
     });
+    //
+    //watch for play-pause
+    btn.addEventListener("click", async () => {
+        if (isPlaying === true) { 
+            isPlaying = false;
+            const p = current_player;
+            const g = current_gain;
+            current_player = null;
+            current_gain = null;
+            fadeOutAndDispose(p,g, 1);
+            // await Tone.getContext().rawContext.suspend();
+            icon.src = "/assets/play_button.svg"
+            
+        }
+        else {
+            isPlaying = true;
+            createAudioGrain(getNewAudioFile(), gymSample, current_grain_size, current_density, current_jitter);
+            icon.src = "/assets/pause_button.svg"
+        }
+
+    console.log("AUDIO PAUSE BUTTON HIT");
+    });
+
 
 }
 
