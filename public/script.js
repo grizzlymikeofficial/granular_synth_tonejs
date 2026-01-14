@@ -43,8 +43,8 @@ let currentProgressPercent = 0; // Global variable to store progress
 //waveform generator
 const wavesurfer = WaveSurfer.create({
     container: '#waveform',
-    waveColor: '#C0C0C0',
-    progressColor: '#999999',
+    waveColor: '#9BADB9',
+    progressColor: '#0D6998',
     url: gymSample,
     interact: false, 
   })
